@@ -1,6 +1,7 @@
 # RouteLLM
 
-RouteLLM is a framework for serving and evaluating LLM routers.  
+RouteLLM is a framework for serving and evaluating LLM routers.
+
 [ [Blog](http://lmsys.org/blog/2024-07-01-routellm/) ] [ [Paper](https://arxiv.org/abs/2406.18665) ]
 
 <p align="center">
@@ -10,7 +11,8 @@ RouteLLM is a framework for serving and evaluating LLM routers.
 Our core features include:
 
 - Drop-in replacement for OpenAI's client (or launch an OpenAI-compatible server) to route simpler queries to cheaper models.
-- Trained routers are provided out of the box, which we have shown to **reduce costs by up to 85%** on widely-used benchmarks such as MT Bench while maintaining **95% GPT-4 performance**.
+- Trained routers are provided out of the box, which we have shown to **reduce costs by up to 85%** while maintaining **95% GPT-4 performance** on widely-used benchmarks like MT Bench.
+- Benchmarks also demonstrate that these routers achieve the same performance as commercial offerings while being **>40% cheaper**. 
 - Easily extend the framework to include new routers and compare the performance of routers across multiple benchmarks.
 
 ## Installation
@@ -116,6 +118,8 @@ Different LLMs vary widely in their costs and capabilities, which leads to a dil
 
 *LLM routing* offers a solution to this. We introduce a router that looks at queries and routes simpler queries to smaller, cheaper models, saving costs while maintaining quality. We focus on routing between 2 models: a stronger, more expensive model and a cheaper but weaker model. Each request is also associated with a _cost threshold_ that determines the cost-quality tradeoff of that request - a higher cost threshold leads to lower cost but may lead to lower-quality responses.
 
+The research in this repository was conducted in [collaboration with Anyscale](https://www.anyscale.com/blog/building-an-llm-router-for-high-quality-and-cost-effective-responses), and we are grateful for their help and support.
+
 ## Server
 
 RouteLLM offers a lightweight OpenAI-compatible server for routing requests based on different routing strategies:
@@ -148,7 +152,7 @@ However, note that because we calibrate the thresholds based on an existing data
 
 ## Evaluation
 
-RouteLLM also includes a evaluation framework to measure the performance of different routing strategies on benchmarks.
+RouteLLM also includes an evaluation framework to measure the performance of different routing strategies on benchmarks.
 
 To evaluate a router on a benchmark, you can use the following command:
 ```
@@ -177,7 +181,9 @@ The full list of routers:
 
 While these routers have been trained on the `gpt-4-1106-preview` and `mixtral-8x7b-instruct-v0.1` model pair, we have found that these routers generalize well to other strong and weak model pairs as well. Therefore, you can replace the model pair used for routing without having to retrain these models!
 
- For the full details, refer to our [paper](https://arxiv.org/abs/2406.18665).
+We also provide detailed instructions on how to train the LLM-based classifier in the following [notebook](https://github.com/anyscale/llm-router/blob/main/README.ipynb).
+
+For the full details, refer to our [paper](https://arxiv.org/abs/2406.18665).
 
 ## Configuration
 
