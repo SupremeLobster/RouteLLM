@@ -1,7 +1,9 @@
 import torch
 from huggingface_hub import PyTorchModelHubMixin
 
-from routellm.routers.similarity_weighted.utils import OPENAI_CLIENT
+# from routellm.routers.similarity_weighted.utils import OPENAI_CLIENT
+from litellm import embedding
+import os
 
 MODEL_IDS = {
     "RWKV-4-Raven-14B": 0,
@@ -109,11 +111,21 @@ class MFModel(torch.nn.Module, PyTorchModelHubMixin):
         model_embed = self.P(model_id)
         model_embed = torch.nn.functional.normalize(model_embed, p=2, dim=1)
 
-        prompt_embed = (
-            OPENAI_CLIENT.embeddings.create(input=[prompt], model=self.embedding_model)
-            .data[0]
-            .embedding
-        )
+        prompt_embed = (embedding(
+            # model=f"azure/{self.embedding_model}", input=[prompt],
+            model="azure/embedding-test",
+            input=[prompt],
+            api_key=os.environ["AZURE_API_KEY"],
+            api_base=os.environ["AZURE_API_BASE"],
+            api_version=os.environ["AZURE_API_VERSION"],
+            azure=True,
+        ).data[0]["embedding"])
+
+        # prompt_embed = (
+        #     OPENAI_CLIENT.embeddings.create(input=[prompt], model=self.embedding_model)
+        #     .data[0]
+        #     .embedding
+        # )
         prompt_embed = torch.tensor(prompt_embed, device=self.get_device())
         prompt_embed = self.text_proj(prompt_embed)
 

@@ -5,11 +5,22 @@ import yaml
 from datasets import Dataset, load_dataset
 from pandarallel import pandarallel
 from tqdm import tqdm
+import os
+
+from huggingface_hub import login
 
 from routellm.controller import Controller
 from routellm.routers.routers import ROUTER_CLS
 
+os.environ["OPENAI_API_KEY"] = "b75c6627bded4f8dbe42825aaa5a1528"
+os.environ["AZURE_API_KEY"] = "b75c6627bded4f8dbe42825aaa5a1528"
+os.environ["AZURE_API_BASE"] = "https://oai-dxclz-dev-oaicat-01.openai.azure.com"
+# Very important to get this right, otherwise it throws "404 Resource not found" error
+os.environ["AZURE_API_VERSION"] = "2024-02-01"
+
 if __name__ == "__main__":
+    login()
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--battles_dataset", type=str, default="lmsys/lmsys-arena-human-preference-55k"
@@ -31,9 +42,20 @@ if __name__ == "__main__":
     if args.task == "generate":
         pandarallel.initialize(progress_bar=True)
         battles_df = load_dataset(args.battles_dataset, split="train").to_pandas()
+        # controller = Controller(
+        #     routers=args.routers,
+        #     config=yaml.safe_load(open(args.config, "r")) if args.config else None,
+        #     # This is not needed since we only calculate the win rate
+        #     routed_pair=None,
+        #     progress_bar=True,
+        # )
         controller = Controller(
             routers=args.routers,
             config=yaml.safe_load(open(args.config, "r")) if args.config else None,
+            strong_model="azure/GPT-4o",
+            weak_model="azure/3022-DSO-chat",
+            api_base="https://oai-dxclz-dev-oaicat-01.openai.azure.com",
+            api_key=os.environ["AZURE_API_KEY"],
             # This is not needed since we only calculate the win rate
             routed_pair=None,
             progress_bar=True,
