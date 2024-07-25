@@ -28,7 +28,7 @@ def get_embeddings(battles_df):
     for i in tqdm.tqdm(range(0, len(user_prompts), batch_size)):
         battles = user_prompts[i : i + batch_size]
         responses = client.embeddings.create(
-            input=battles, model="text-embedding-3-small"
+            input=battles, model="azure/embedding-large"
         ).data
         embeddings.extend([data.embedding for data in responses])
     embeddings = torch.tensor(embeddings)

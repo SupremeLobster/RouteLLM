@@ -13,6 +13,9 @@ from routellm.routers.causal_llm.llm_utils import (
     load_prompt_format,
     to_openai_api_messages,
 )
+
+from litellm import embedding
+
 from routellm.routers.causal_llm.model import CausalLLMClassifier
 from routellm.routers.matrix_factorization.model import MODEL_IDS, MFModel
 from routellm.routers.similarity_weighted.utils import (
@@ -155,7 +158,7 @@ class SWRankingRouter(Router):
             for dataset in arena_embedding_datasets
         ]
         self.arena_conv_embedding = np.concatenate(embeddings)
-        self.embedding_model = "text-embedding-3-small"
+        self.embedding_model = "embedding-large"
 
         assert len(self.arena_df) == len(
             self.arena_conv_embedding
@@ -190,9 +193,9 @@ class SWRankingRouter(Router):
         # )
 
         prompt_emb = (embedding(
-            # model=f"azure/{self.embedding_model}",
-            model="azure/embedding-test",
+            model=f"azure/{self.embedding_model}",
             input=[prompt],
+            dimensions=1536,
             api_key=os.environ["AZURE_API_KEY"],
             api_base=os.environ["AZURE_API_BASE"],
             api_version=os.environ["AZURE_API_VERSION"],
