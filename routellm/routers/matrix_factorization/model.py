@@ -87,7 +87,7 @@ class MFModel(torch.nn.Module, PyTorchModelHubMixin):
         self.use_proj = use_proj
         self.P = torch.nn.Embedding(num_models, dim)
 
-        self.embedding_model = "embedding-large"
+        self.embedding_model = "embedding-test"
 
         if self.use_proj:
             self.text_proj = torch.nn.Sequential(
@@ -114,7 +114,7 @@ class MFModel(torch.nn.Module, PyTorchModelHubMixin):
         prompt_embed = (embedding(
             model=f"azure/{self.embedding_model}",
             input=[prompt],
-            dimensions=1536,
+            # dimensions=1536,
             api_key=os.environ["AZURE_API_KEY"],
             api_base=os.environ["AZURE_API_BASE"],
             api_version=os.environ["AZURE_API_VERSION"],

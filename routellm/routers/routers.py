@@ -158,7 +158,7 @@ class SWRankingRouter(Router):
             for dataset in arena_embedding_datasets
         ]
         self.arena_conv_embedding = np.concatenate(embeddings)
-        self.embedding_model = "embedding-large"
+        self.embedding_model = "embedding-test"
 
         assert len(self.arena_df) == len(
             self.arena_conv_embedding

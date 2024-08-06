@@ -24,7 +24,7 @@ class PairwiseDataset(Dataset):
         self.models_b = torch.tensor(
             [MODEL_IDS[sample["model_b"]] for sample in data], dtype=torch.int64
         )
-        self.prompt_id = [sample["idx"] for sample in data]
+        self.prompt_id = [sample["id"] for sample in data]
         self.winners = [sample["winner"] for sample in data]
 
     def __len__(self):
@@ -201,8 +201,8 @@ def train_loops(
 
 if __name__ == "__main__":
     # an example of training the model
-    json_path = "/path/to/pairwise_data.json"
-    npy_path = "/path/to/prompt/embedding.npy"
+    json_path = "./data/gpt4_judge_battles_prepared.json"
+    npy_path = "./data/gpt4_judge_battles_embeddings.npy"
 
     dim = 128
     batch_size = 64
@@ -237,9 +237,10 @@ if __name__ == "__main__":
         dim=dim,
         num_models=len(MODEL_IDS),
         num_prompts=len(data),
+        text_dim=3072,
         use_proj=use_proj,
         npy_path=npy_path,
-    ).to("cuda")
+    ).to("cpu")
 
     train_loops(
         model,
@@ -249,5 +250,8 @@ if __name__ == "__main__":
         weight_decay=weight_decay,
         alpha=alpha,
         num_epochs=num_epochs,
-        device="cuda",
+        device="cpu",
     )
+
+    # save the model
+    torch.save(model.state_dict(), "mf_model.pth")
