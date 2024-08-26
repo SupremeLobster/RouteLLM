@@ -9,7 +9,7 @@ description = "A framework for serving and evaluating large language model route
 readme = "README.md"
 classifiers = ["Programming Language :: Python :: 3"]
 dependencies = [
-	'importlib-metadata; python_version<"3.10"',
+	'importlib-metadata; python_version<"3.12"',
 	'pyyaml',
 	'pydantic',
 	'numpy',
